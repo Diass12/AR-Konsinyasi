@@ -8,31 +8,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v5
 
-      - name: Extract V12
+      - name: Extract Cloud Build package
         run: |
-          mkdir project
+          mkdir -p project
           unzip -q AR_Konsinyasi_CLOUD_BUILD_V12.zip -d project
 
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - name: Extract Android project
+        run: |
+          unzip -q project/cloudbuild/AR_Konsinyasi_Aplikasi_FINAL_V12.zip -d project/appsource
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10'
 
       - name: Build APK
-        working-directory: project
+        working-directory: project/appsource/AR_Konsinyasi_Aplikasi/apk
         run: |
-          chmod +x gradlew
-          ./gradlew assembleDebug
+          gradle assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: AR-Konsinyasi-V12-APK
-          path: project/**/build/outputs/apk/debug/*.apk
+          path: project/appsource/AR_Konsinyasi_Aplikasi/apk/app/build/outputs/apk/debug/*.apk
