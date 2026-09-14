@@ -11,13 +11,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Extract Cloud Build package
+      - name: Extract V12 package
         run: |
           mkdir -p project
           unzip -q AR_Konsinyasi_CLOUD_BUILD_V12.zip -d project
 
       - name: Extract Android project
         run: |
+          mkdir -p project/appsource
           unzip -q project/cloudbuild/AR_Konsinyasi_Aplikasi_FINAL_V12.zip -d project/appsource
 
       - name: Set up Java
